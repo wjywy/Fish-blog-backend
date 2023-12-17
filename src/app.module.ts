@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: '630wujiayuwy',
       database: 'article',
       entities: ['dist/modules/**/*.entity{.ts,.js}'],
+      charset: 'utf8mb4',
     }),
     ArticleModule,
     UserModule,

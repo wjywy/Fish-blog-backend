@@ -25,11 +25,13 @@ export class UserService {
   }
 
   async vertify(passUser: PassUser) {
-    const { password } = passUser;
+    const { password, account } = passUser;
     console.log(password, 'password');
+    console.log(account, 'account');
     const pwd = await this.userRepository
       .createQueryBuilder('user')
       .where('user.password = :password', { password })
+      .where('user.account = :account', { account })
       .getOne();
     if (!pwd) {
       throw new NotFoundException({ info: '验证失败' });

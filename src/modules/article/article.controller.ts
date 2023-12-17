@@ -8,7 +8,7 @@ import { ArticleEditDTO } from './dto/articleEdit.dto';
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('article')
+@Controller('api/article')
 export class ArticleController {
   constructor(private articleService: ArticleService) {}
 
@@ -37,11 +37,16 @@ export class ArticleController {
     return this.articleService.update(articleEditDTO);
   }
 
+  @Post('delete')
+  delete(@Body() idDTO: IdDTO) {
+    return this.articleService.deleteArticle(idDTO);
+  }
+
   @Post('upload')
   @UseInterceptors(FileInterceptor('uploadFile'))
   upload(@Body() articleInfo: any, @UploadedFile() file) {
-    console.log(articleInfo, 'infos');
-    console.log(file, 'file');
+    // console.log(articleInfo, 'infos');
+    // console.log(file, 'file');
     return this.articleService.upload(file, articleInfo);
   }
 }

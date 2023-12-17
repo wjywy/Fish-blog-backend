@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { writeFileRecursive } from 'src/utils/writeFileRecursive';
 import { AuthGuard } from '@nestjs/passport';
 
-// import { getPagination } from 'src/utils/getPagination';
 /**
  * Repository: 任何实体的存储库
  * MongoRepository: 具有特殊功能的存储库,仅用于MongoDB
@@ -70,8 +69,16 @@ export class ArticleService {
       throw new NotFoundException('找不到文章');
     }
     const result = { info: articleDetial };
-    console.log(result, 'articleDetail');
+    // console.log(result, 'articleDetail');
     return result;
+  }
+
+  async deleteArticle(IdDTO: IdDTO) {
+    const { id } = IdDTO;
+    await this.articleRepository.delete({ id });
+    return {
+      info: 'delete success',
+    };
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -82,7 +89,7 @@ export class ArticleService {
     article.content = articleCreateDTO.content;
     article.types = articleCreateDTO.type;
     const result = await this.articleRepository.save(article);
-    console.log(result, 'result');
+    // console.log(result, 'result');
     return { info: result };
   }
 
@@ -92,8 +99,9 @@ export class ArticleService {
   async update(articleEditDTO: ArticleEditDTO) {
     const { title } = articleEditDTO;
     const articleToUpdate = await this.articleRepository.findOneBy({ title });
-    console.log(articleToUpdate, 'articleToUpdate');
+    // console.log(articleToUpdate, 'articleToUpdate');
     if (!articleToUpdate) {
+      console.log(articleEditDTO.content);
       this.create({
         title: articleEditDTO.title,
         description: articleEditDTO.description,
@@ -113,10 +121,9 @@ export class ArticleService {
   @UseGuards(AuthGuard('jwt'))
   async upload(file: any, articleInfo: any) {
     /**读取buffer数据 */
-    // console.log(file, 'file');
-    // console.log(file.buffer.toString(), 'file');
 
     await writeFileRecursive(`./readArticle/${file.originalname}`, file.buffer);
+    // console.log(file.buffer.toString());
     this.update({
       title: `${articleInfo.title}`,
       description: articleInfo.description,
